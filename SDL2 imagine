@@ -1,0 +1,99 @@
+#include<iostream>
+
+#include<SDL.h>
+
+
+SDL_Window* window = NULL;
+
+SDL_Surface* screenSurface = NULL;
+
+SDL_Surface* helloWorld = NULL;
+
+const int SCREEN_WIDTH = 800;
+
+const int SCREEN_HEIGHT = 600;
+
+bool loadMedia();
+
+bool init();
+
+bool init()
+{
+    bool success = true;
+
+    if( SDL_Init( SDL_INIT_VIDEO) != 0 )
+    {
+        std::cout << "SDL could not be initialized!, SDL_ERROR: "  << SDL_GetError();
+    }
+    else
+    {
+        window = SDL_CreateWindow ("GAME", SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,SCREEN_WIDTH,SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+
+        if(window == NULL)
+        {
+            std::cout << "Window could not be created! ERROR: " << SDL_GetError();
+            success = false;
+        }
+        else
+        {
+            screenSurface = SDL_GetWindowSurface(window);
+
+           //SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface -> format,255,255,255));
+
+        }
+    }
+    return success;
+
+}
+
+int main(int argc, char* argv[])
+{
+    if(!init())
+    {
+        std::cout <<  "Falled to initialize!\n";
+    }
+    else
+    {
+        SDL_BlitSurface( helloWorld, NULL, screenSurface, NULL);
+
+         SDL_UpdateWindowSurface(window);
+
+        SDL_Delay(2000);
+
+    }
+
+
+    return 0;
+
+}
+
+bool loadMedia()
+{
+
+    bool success = true;
+
+    helloWorld = SDL_LoadBMP( "hello_world.bmp");
+
+    if(helloWorld == NULL)
+    {
+        std::cout << "Unable to load image hello_world.bmp! SDL Error: " << SDL_GetError();
+        success = false;
+    }
+    return success;
+
+}
+
+void close()
+{
+
+    SDL_FreeSurface(helloWorld);
+
+    helloWorld = NULL;
+
+    SDL_DestroyWindow(window);
+
+    window = NULL;
+
+    SDL_Quit();
+
+}
